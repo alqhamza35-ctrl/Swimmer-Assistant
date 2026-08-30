@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مساعد السباحين</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0077be 0%, #00a8e8 50%, #00d4ff 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #0077be;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #0077be;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0077be, #00a8e8);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745, #5cb85c);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545, #e74c3c);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107, #ffb347);
+            color: #333;
+        }
+
+        .result {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result h3 {
+            color: #0077be;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            color: #666;
+        }
+
+        .result-value {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .timer-section {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .timer-section.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .timer-display {
+            font-size: 48px;
+            font-weight: bold;
+            color: #00ff88;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .timer-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .timer-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .timer-btn.start {
+            background: #28a745;
+            color: white;
+        }
+
+        .timer-btn.stop {
+            background: #dc3545;
+            color: white;
+        }
+
+        .timer-btn.reset {
+            background: #6c757d;
+            color: white;
+        }
+
+        .message {
+            background: #e8f4fd;
+            border-right: 4px solid #0077be;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .message.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .message p {
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .swimmer-icon {
+            text-align: center;
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .performance-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .badge-excellent {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-good {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .badge-average {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-needs-work {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="swimmer-icon">🏊</div>
+        <h1>مساعد السباحين</h1>
+        <p class="subtitle">خبير في تقييم الأداء المائي وحساب الأوقات</p>
+
+        <div class="input-group">
+            <label for="distance">المسافة بالمتر:</label>
+            <input type="number" id="distance" placeholder="أدخل المسافة (مثال: 100)" min="1" max="10000">
+        </div>
+
+        <div class="input-group">
+            <label for="unit">وحدة القياس:</label>
+            <select id="unit">
+                <option value="m">متر</option>
+                <option value="km">كيلومتر</option>
+            </select>
+        </div>
+
+        <button class="btn btn-primary" onclick="calculateTime()">احسب الوقت المتوقع</button>
+
+        <div class="result" id="result">
+            <h3>📊 النتائج</h3>
+            <div class="result-item">
+                <span class="result-label">المسافة:</span>
+                <span class="result-value" id="distanceResult">-</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">الوقت المتوقع:</span>
+                <span class="result-value" id="timeResult">-</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">السرعة المقترحة:</span>
+                <span class="result-value" id="speedResult">-</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">التصنيف:</span>
+                <span class="result-value" id="classificationResult">-</span>
+            </div>
+        </div>
+
+        <div class="message" id="message">
+            <p id="messageText"></p>
+        </div>
+
+        <div class="timer-section" id="timerSection">
+            <h3 style="color: white; margin-bottom: 10px;">⏱️ قياس الوقت الفعلي</h3>
+            <div class="timer-display" id="timerDisplay">00:00:00</div>
+            <div class="timer-controls">
+                <button class="timer-btn start" onclick="startTimer()">▶️ ابدأ</button>
+                <button class="timer-btn stop" onclick="stopTimer()">⏹️ أوقف</button>
+                <button class="timer-btn reset" onclick="resetTimer()">🔄 إعادة</button>
+            </div>
+            <div id="finalTime" style="color: white; margin-top: 15px; font-size: 18px; display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        let timerInterval = null;
+        let startTime = 0;
+        let elapsedTime = 0;
+        let isRunning = false;
+
+        function calculateTime() {
+            const distanceInput = document.getElementById('distance');
+            const unitSelect = document.getElementById('unit');
+            const distance = parseFloat(distanceInput.value);
+            const unit = unitSelect.value;
+
+            if (!distance || distance <= 0) {
+                alert('الرجاء إدخال مسافة صحيحة');
+                return;
+            }
+
+            let distanceInMeters = distance;
+            if (unit === 'km') {
+                distanceInMeters = distance * 1000;
+            }
+
+            const expectedTimeSeconds = distanceInMeters * 1.2;
+            const expectedMinutes = Math.floor(expectedTimeSeconds / 60);
+            const expectedSeconds = Math.round(expectedTimeSeconds % 60);
+
+            const speedKmh = (distanceInMeters / 1000) / (expectedTimeSeconds / 3600);
+
+            document.getElementById('distanceResult').textContent = 
+                distanceInMeters + ' متر';
+            document.getElementById('timeResult').textContent = 
+                expectedMinutes + ' دقيقة و ' + expectedSeconds + ' ثانية';
+            document.getElementById('speedResult').textContent = 
+                speedKmh.toFixed(2) + ' كم/ساعة';
+
+            let classification = '';
+            let badgeClass = '';
+            if (distanceInMeters <= 50) {
+                classification = 'مسافة قصيرة';
+                badgeClass = 'badge-excellent';
+            } else if (distanceInMeters <= 200) {
+                classification = 'مسافة متوسطة';
+                badgeClass = 'badge-good';
+            } else if (distanceInMeters <= 800) {
+                classification = 'مسافة طويلة';
+                badgeClass = 'badge-average';
+            } else {
+                classification = 'مسافة طويلة جداً';
+                badgeClass = 'badge-needs-work';
+            }
+
+            document.getElementById('classificationResult').innerHTML = 
+                '<span class="performance-badge ' + badgeClass + '">' + classification + '</span>';
+
+            document.getElementById('result').classList.add('show');
+
+            const messageText = document.getElementById('messageText');
+            messageText.innerHTML = '🏆 هذا هو الحد الأدنى للوقت المتوقع لمسافة ' + 
+                distanceInMeters + ' متر.<br><br>' +
+                '💪 يجب عليك دائماً السعي لتحسين أداءك والإنجاز أسرع من هذا الوقت.<br><br>' +
+                '🎯 استخدم المؤقت أدناه لقياس وقتك الفعلي وقارنه بالمتوقع!';
+            document.getElementById('message').classList.add('show');
+
+            document.getElementById('timerSection').classList.add('show');
+
+            resetTimer();
+        }
+
+        function startTimer() {
+            if (!isRunning) {
+                startTime = Date.now() - elapsedTime;
+                timerInterval = setInterval(updateTimer, 10);
+                isRunning = true;
+                document.getElementById('finalTime').style.display = 'none';
+            }
+        }
+
+        function stopTimer() {
+            if (isRunning) {
+                clearInterval(timerInterval);
+                elapsedTime = Date.now() - startTime;
+                isRunning = false;
+
+                const totalSeconds = elapsedTime / 1000;
+                const minutes = Math.floor(totalSeconds / 60);
+                const seconds = Math.floor(totalSeconds % 60);
+                const milliseconds = Math.floor((totalSeconds % 1) * 100);
+
+                const finalTimeEl = document.getElementById('finalTime');
+                finalTimeEl.innerHTML = '🏁 وقتك النهائي: ' + 
+                    minutes + ':' + 
+                    seconds.toString().padStart(2, '0') + '.' + 
+                    milliseconds.toString().padStart(2, '0');
+                finalTimeEl.style.display = 'block';
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            elapsedTime = 0;
+            isRunning = false;
+            document.getElementById('timerDisplay').textContent = '00:00:00';
+            document.getElementById('finalTime').style.display = 'none';
+        }
+
+        function updateTimer() {
+            const currentTime = Date.now() - startTime;
+            const totalSeconds = currentTime / 1000;
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = Math.floor(totalSeconds % 60);
+            const milliseconds = Math.floor((totalSeconds % 1) * 100);
+
+            document.getElementById('timerDisplay').textContent = 
+                minutes.toString().padStart(2, '0') + ':' + 
+                seconds.toString().padStart(2, '0') + '.' + 
+                milliseconds.toString().padStart(2, '0');
+        }
+
+        document.getElementById('distance').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculateTime();
+            }
+        });
+    </script>
+</body>
+</html>
